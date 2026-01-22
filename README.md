@@ -61,9 +61,9 @@ data = pd.concat(
 
 Daily log returns are calculated as:
 
-\[
+$$
     r_t = \log\left(\frac{P_t}{P_{t-1}}\right)
-\]
+$$
 
 
 returns = np.log(data / data.shift(1)).dropna()
