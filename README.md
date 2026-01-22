@@ -54,16 +54,19 @@ data = pd.concat(
      for t in tickers],
     axis=1
 )
+```
 
-### 1) Download daily closing prices
 
+### 2) Compute Log Returns
+
+```python
 Daily log returns are calculated as:
 
 \[
 r_t = \log\left(\frac{P_t}{P_{t-1}}\right)
 \]
 
-```python
+
 returns = np.log(data / data.shift(1)).dropna()
 ```
 
