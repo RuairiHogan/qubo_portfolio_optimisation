@@ -65,23 +65,24 @@ $$
     r_t = \log\left(\frac{P_t}{P_{t-1}}\right)
 $$
 
+```python
 
 returns = np.log(data / data.shift(1)).dropna()
-
+```
 
 ---
 
 ## 3) Annualise expected returns and covariance
 
-Expected annual return \(\mu\) and annualised covariance matrix \(\Sigma\) are computed using:
+Expected annual return $\mu$ and annualised covariance matrix $\Sigma$ are computed using:
 
-\[
+$$
 \mu = 252 \cdot \mathrm{mean}(r)
-\]
+$$
 
-\[
+$$
 \Sigma = 252 \cdot \mathrm{cov}(r)
-\]
+$$
 
 ```python
 annual_returns = 252 * returns.mean()
@@ -96,42 +97,47 @@ These values are used as inputs for the portfolio risk-return optimisation.
 
 Each stock is represented by a binary decision variable:
 
-\[
+
+$$
 x_i \in \{0, 1\}
-\]
+$$
+
 
 Where:
 
-- \(x_i = 1\) means stock *i* is selected  
-- \(x_i = 0\) means stock *i* is excluded
+- $x_i = 1$ means stock *i* is selected  
+- $x_i = 0$ means stock *i* is excluded
 
 ### Objective: return vs risk
 
 The objective combines return and risk:
 
-\[
+
+$$
 \text{minimise: } -\mu^T x + \lambda x^T \Sigma x
-\]
+$$
 
-### Constraint: select exactly \(k\) assets
+### Constraint: select exactly $k$ assets
 
-Selecting exactly \(k\) assets is enforced using a quadratic penalty term:
+Selecting exactly $k$ assets is enforced using a quadratic penalty term:
 
-\[
+
+$$
 P\left(\sum_i x_i - k\right)^2
-\]
+$$
 
 So the full QUBO form becomes:
 
-\[
+
+$$
 \text{minimise: } x^T Q x
-\]
+$$
 
 Where **Q** contains contributions from:
 
 - Expected return (encourages high return)
 - Risk/covariance (penalises volatility and correlation)
-- Constraint penalty (forces exactly \(k\) assets)
+- Constraint penalty (forces exactly $k$ assets)
 
 ---
 
@@ -139,9 +145,9 @@ Where **Q** contains contributions from:
 
 | Parameter | Meaning | Value |
 |---|---|---:|
-| \(\lambda\) | Risk aversion term | 0.5 |
-| \(k\) | Number of assets required | 2 |
-| \(P\) | Penalty weight for constraint | 5.0 |
+| $\lambda$ | Risk aversion term | 0.5 |
+| $k$ | Number of assets required | 2 |
+| $P$ | Penalty weight for constraint | 5.0 |
 
 ---
 
@@ -161,7 +167,7 @@ model.optimize()
 
 ## Results
 
-### Annualised Expected Returns (\(\mu\))
+### Annualised Expected Returns ($\mu$)
 
 ```
 AAPL    0.1149
@@ -173,7 +179,7 @@ JNJ    -0.0311
 - Highest return: **JPM** (0.1598)  
 - Lowest return: **JNJ** (-0.0311) *(negative expected return)*
 
-### Annualised Covariance Matrix (\(\Sigma\))
+### Annualised Covariance Matrix ($\Sigma$)
 
 ```
           AAPL      TSLA       JPM       JNJ
@@ -189,7 +195,7 @@ JNJ   0.008286  0.000494  0.010786  0.026707
 - **JNJ** is low-risk, but has negative return  
 - **AAPL + JPM** covariance is moderate, making them a reasonable balanced pair  
 
-### QUBO Matrix (\(Q\))
+### QUBO Matrix ($Q$)
 
 ```
          AAPL     TSLA      JPM      JNJ
